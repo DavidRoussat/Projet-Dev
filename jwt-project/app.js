@@ -129,3 +129,27 @@ app.get("/allgames", auth, async (req, res) => {
     const games = await Game.find()
     res.status(200).send(games)
 })
+
+app.get("/onegame", auth, async (req, res) => {
+    try {
+        const id = req.query['0']
+        const game = await Game.findById(id)
+        res.status(200).send(game)
+    } catch (e) {
+        console.log(e)
+    }
+})
+
+app.post("/joingame", auth, async (req, res) => {
+    try {
+        console.log(req)
+        const id = req.query['0']
+        participant = req.body.participant
+        const game = await Game.findById(id)
+        game.participants.push(participant)
+        game.save()
+        res.status(200).send(game)
+    } catch (e) {
+        console.log(e)
+    }
+})
