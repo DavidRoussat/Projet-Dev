@@ -26,12 +26,12 @@ const personnageSchema = new mongoose.Schema({
 
 
 const userSchema = new mongoose.Schema({
-    first_name: {type: String, default: null},
+    first_name: {type: String, unique: true},
     last_name: {type: String, default: null},
     email: {type: String, unique: true},
     password: {type: String},
-    token: {type: String},
-    personnages: {type:Map, of:personnageSchema}
+    personnages: {type:Map, of:personnageSchema},
+    token: {type: String}
 });
 
 module.exports = mongoose.model("user", userSchema);

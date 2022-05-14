@@ -69,7 +69,7 @@ app.post("/login", async (req, res) => {
             user.token = token;
             res.status(200).json(user);
         }
-        res.status(400).send("Invalid Credentials");
+        //res.status(400).send("Invalid Credentials");
     } catch (err) {
         console.log(err);
     }
@@ -81,10 +81,10 @@ const auth = require("./middleware/auth");
 app.post("/createperso", auth, async (req, res) => {
     try {
         const {perso} = req.body
+        const nom = perso.nom.toString()
         const decoded = jwt.verify(req.headers["x-access-token"], process.env.TOKEN_KEY)
         const email = decoded.email
         const user = await User.findOne({email})
-        const nom = perso.nom.toString()
         user.personnages.set(nom, perso)
         user.save()
         res.status(201).send("perso créé")
@@ -116,8 +116,7 @@ app.post("/creategame", auth, async (req, res) => {
         const game = await Game.create({
             titre,
         })
-        game.participants.push(id)
-        game.save()
+
         res.status(200).json(game);
     } catch (e) {
         console.log(e)
@@ -142,9 +141,12 @@ app.get("/onegame", auth, async (req, res) => {
 app.post("/joingame", auth, async (req, res) => {
     try {
         const id = req.query['0']
-        participant = req.body.participant
+        const {personnage} = req.body
+        const decoded = jwt.verify(req.headers["x-access-token"], process.env.TOKEN_KEY)
+        const user = await User.findById(decoded.user_id)
         const game = await Game.findById(id)
-        game.participants.push(participant)
+        game.participants.push(decoded.user_id)
+        game.personnages.set(user.first_name, personnage)
         game.save()
         res.status(200).send(game)
     } catch (e) {
