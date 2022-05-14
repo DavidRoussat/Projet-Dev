@@ -77,7 +77,6 @@ app.post("/login", async (req, res) => {
 });
 
 const auth = require("./middleware/auth");
-const e = require("express");
 
 app.post("/createperso", auth, async (req, res) => {
     try {
@@ -142,7 +141,6 @@ app.get("/onegame", auth, async (req, res) => {
 
 app.post("/joingame", auth, async (req, res) => {
     try {
-        console.log(req)
         const id = req.query['0']
         participant = req.body.participant
         const game = await Game.findById(id)
