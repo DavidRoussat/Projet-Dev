@@ -153,3 +153,16 @@ app.post("/joingame", auth, async (req, res) => {
         console.log(e)
     }
 })
+
+app.post("/addscenario", auth, async (req, res) => {
+    try {
+        const {gameId} = req.body
+        const {scenario} = req.body
+        const game = await Game.findById(gameId)
+        game.scenario = scenario
+        game.save()
+        res.status(200).send(game)
+    } catch (e) {
+        console.log(e)
+    }
+})
